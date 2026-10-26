@@ -1,0 +1,95 @@
+// Skema sesuai ERD pada spesifikasi. Nama field sengaja snake_case
+// agar JSON API identik dengan kontrak endpoint (tanpa konversi di frontend).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id            BigInt   @id @default(autoincrement())
+  name          String   @db.VarChar(100)
+  email         String   @unique @db.VarChar(191)
+  password_hash String   @db.VarChar(255)
+  role          String   @default("creator") @db.VarChar(20) // creator | editor | admin
+  created_at    DateTime @default(now()) @db.Timestamp(0)
+
+  channels Channel[]
+  contents Content[]
+
+  @@map("users")
+}
+
+model Channel {
+  id          BigInt   @id @default(autoincrement())
+  user_id     BigInt
+  platform    String   @db.VarChar(30) // youtube | tiktok | instagram | linkedin
+  handle_name String   @db.VarChar(100)
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+
+  user     User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  contents Content[]
+
+  @@unique([user_id, platform, handle_name])
+  @@map("channels")
+}
+
+model Content {
+  id             BigInt    @id @default(autoincrement())
+  user_id        BigInt
+  channel_id     BigInt
+  title          String    @db.VarChar(255)
+  description    String?   @db.Text
+  script_draft   String?   @db.Text
+  format_type    String    @db.VarChar(30) // short_video | long_video | carousel | single_post
+  status         String    @default("idea") @db.VarChar(20) // idea | scripting | recording | editing | ready | published
+  priority       String    @default("medium") @db.VarChar(10) // low | medium | high
+  scheduled_date DateTime? @db.Date
+  published_date DateTime? @db.Date
+  published_url  String?   @db.VarChar(255) // wajib terisi jika status = published
+  created_at     DateTime  @default(now()) @db.Timestamp(0)
+  updated_at     DateTime  @default(now()) @updatedAt @db.Timestamp(0)
+
+  user       User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  channel    Channel            @relation(fields: [channel_id], references: [id], onDelete: Cascade)
+  checklists ContentChecklist[]
+  metrics    ContentMetric[]
+
+  @@index([user_id, status])
+  @@index([channel_id])
+  @@index([scheduled_date])
+  @@map("contents")
+}
+
+model ContentChecklist {
+  id           BigInt   @id @default(autoincrement())
+  content_id   BigInt
+  task_name    String   @db.VarChar(255)
+  is_completed Boolean  @default(false)
+  created_at   DateTime @default(now()) @db.Timestamp(0)
+
+  content Content @relation(fields: [content_id], references: [id], onDelete: Cascade)
+
+  @@index([content_id])
+  @@map("content_checklists")
+}
+
+model ContentMetric {
+  id             BigInt   @id @default(autoincrement())
+  content_id     BigInt
+  recorded_at    DateTime @db.Date
+  views_count    Int      @default(0)
+  likes_count    Int      @default(0)
+  comments_count Int      @default(0)
+  shares_count   Int      @default(0)
+  created_at     DateTime @default(now()) @db.Timestamp(0)
+
+  content Content @relation(fields: [content_id], references: [id], onDelete: Cascade)
+
+  @@index([content_id, recorded_at])
+  @@map("content_metrics")
+}
