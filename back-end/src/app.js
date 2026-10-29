@@ -10,13 +10,29 @@ const app = express();
 console.log("CORS origins:", process.env.CORS_ORIGIN);
 
 // 🌟 2. PASANG MIDDLEWARE CORS TEPAT DI BAWAH DEKLARASI 'app'
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim());
+
 app.use(
   cors({
-    origin: (process.env.CORS_ORIGIN || "https://stunning-pancake-xrv9v44x6g493v6pj-5174.app.github.dev:5174")
-      .split(",")
-      .map((o) => o.trim()),
-  }),
+    origin: function (origin, callback) {
+      // Izinkan request tanpa origin (seperti mobile apps, curl, atau postman)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+        callback(null, true);
+      } else {
+        callback(new Error("Blocked by CORS policy"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: true,
+  })
 );
+// Tambahkan penanganan eksplisit untuk Preflight Request (OPTIONS) global
+app.options("*", cors());
 
 app.use(express.json({ limit: "1mb" }));
 

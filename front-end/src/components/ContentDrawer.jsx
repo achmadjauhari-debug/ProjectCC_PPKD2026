@@ -367,7 +367,7 @@ export default function ContentDrawer({ id, channels, onClose, onChanged }) {
               placeholder="Nama tugas"
               aria-label="Nama tugas"
             />
-            <Button variant="secondary">
+            <Button variant="secondary" type="submit">
               <Plus /> Tambah
             </Button>
           </form>
@@ -451,7 +451,7 @@ export default function ContentDrawer({ id, channels, onClose, onChanged }) {
                     </Field>
                   ))}
                 </div>
-                <Button variant="secondary">
+                <Button variant="secondary" type="submit">
                   <Plus /> Catat metrik
                 </Button>
               </form>

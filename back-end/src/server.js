@@ -15,7 +15,7 @@ try {
   console.error('Tidak bisa terhubung ke MySQL. Periksa DATABASE_URL di .env dan jalankan "npm run migrate".\n', e.message);
   process.exit(1);
 }
-const server = app.listen(port, () => console.log(`API berjalan di https://stunning-pancake-xrv9v44x6g493v6pj-4000.app.github.dev:${port}`));
+const server = app.listen(port, () => console.log(`API berjalan di localhost:${port}`));
 
 const shutdown = async () => {
   server.close();
