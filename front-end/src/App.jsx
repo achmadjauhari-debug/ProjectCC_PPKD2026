@@ -20,6 +20,7 @@ export default function App() {
   const [view, setView] = useState('pipeline');
   const [theme, setTheme] = useState(initialTheme);
 
+  // 4. TWO useEffect Hooks (Tailwind/Shadcn and Bootstrap for dark theme)
   useEffect(() => { setUnauthorizedHandler(() => setUser(null)); }, []);
   useEffect(() => {
     // class "dark" untuk shadcn, data-bs-theme untuk Bootstrap
@@ -28,8 +29,11 @@ export default function App() {
     localStorage.setItem('ccp_theme', theme);
   }, [theme]);
 
+  // 5. ACTION FUNCTIONS
   const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
   const logout = () => { setSession(null); setUser(null); };
+
+  // 6. THE RENDERED UI
 
   return (
     <ToastProvider theme={theme}>

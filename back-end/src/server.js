@@ -2,6 +2,8 @@ import 'dotenv/config';
 import app from './app.js';
 import { prisma } from './prisma.js';
 
+
+
 if (!process.env.JWT_SECRET) {
   console.error('JWT_SECRET belum diatur. Salin .env.example menjadi .env lalu isi nilainya.');
   process.exit(1);
@@ -13,7 +15,7 @@ try {
   console.error('Tidak bisa terhubung ke MySQL. Periksa DATABASE_URL di .env dan jalankan "npm run migrate".\n', e.message);
   process.exit(1);
 }
-const server = app.listen(port, () => console.log(`API berjalan di http://localhost:${port}`));
+const server = app.listen(port, () => console.log(`API berjalan di https://stunning-pancake-xrv9v44x6g493v6pj-4000.app.github.dev:${port}`));
 
 const shutdown = async () => {
   server.close();

@@ -68,7 +68,7 @@ await prisma.content.create({
     priority: 'low',
     scheduled_date: d('2026-10-10'),
     published_date: d('2026-10-10'),
-    published_url: 'https://youtube.com/watch?v=contoh123',
+    published_url: 'https://www.youtube.com/watch?v=jNQXAC9IVRM',
     metrics: {
       create: [
         { recorded_at: d('2026-10-12'), views_count: 1240, likes_count: 96, comments_count: 14, shares_count: 8 },
